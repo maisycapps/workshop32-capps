@@ -39,7 +39,7 @@ init();
 // GET
 app.get("/api/flavors", async (req, res, next) => {
     try {
-      const SQL = `SELECT * from flavors ORDER BY created_at DESC`;
+      const SQL = /*sql*/ `SELECT * from flavors ORDER BY created_at DESC`;
       const response = await client.query(SQL);
       res.send(response.rows);
     } catch (error) {
@@ -57,6 +57,47 @@ app.post("/api/flavors", async(req, res, next) => {
       `;
       const response = await client.query(SQL, [req.body.name]);
       res.send(response.rows[0]);
+    }
+    catch(error){
+      next(error);
+    }
+  });
+
+// PUT
+app.put("/api/flavors/:id", async(req, res, next) => {
+    try {
+      const SQL = /*sql*/ `
+        UPDATE flavors
+        SET name=$1, is_favorite=$2, updated_at= now()
+        WHERE id=$3
+        RETURNING * 
+      `;
+  const response = await client.query(SQL, [req.body.name,
+      req.body.is_favorite, req.params.id]);
+  res.send(response.rows[0]);
+    }
+    catch(error){
+      next(error);
+    }
+});
+
+// GET BY ID
+app.get("/api/flavors/:id", async (req, res, next) => {
+    try {
+      const SQL = /*sql*/ `SELECT * from flavors WHERE id=$1`;
+      const response = await client.query(SQL, [req.params.id]);
+      res.send(response.rows);
+    } catch (error) {
+      next(error);
+    }
+});
+
+// DELETE
+app.delete('/api/flavors/:id', async(req, res, next) => {
+    try {
+      const SQL = /*sql*/ `DELETE from flavors WHERE id=$1`;
+      const response = await client.query(SQL, [req.params.id]);
+      res.sendStatus(204);
     }
     catch(error){
       next(error);
