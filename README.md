@@ -1,2 +1,2 @@
-##workshop 32
-#The Acme Ice Cream Shop
+Workshop 32
+The Acme Ice Cream Shop
